@@ -69,6 +69,7 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
+  console.log('1', guest_id);
   return pool.query(`
   SELECT properties.*, reservations.*, AVG(rating) as average_rating
   FROM reservations
@@ -81,6 +82,7 @@ const getAllReservations = function(guest_id, limit = 10) {
   LIMIT $2;
   `,[`${guest_id}`,limit])
   .then(res => {
+    console.log(res.rows);
     return res.rows;
   })
 }
@@ -105,6 +107,7 @@ const getAllProperties = function(options, limit = 10) {
   if (options.city) {
     queryParams.push(`%${options.city}%`);
     queryString += `WHERE city LIKE $${queryParams.length}`;
+    console.log(queryString);
   }
   //search with minimum price/night - optional
   if (options.minimum_price_per_night) {
@@ -151,9 +154,10 @@ const addProperty = function(property) {
   street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
   VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
   RETURNING *;
-  `,[`${property.owner_id}`, `${property.title}`, `${property.description}`, `${property.thumbnail_photo_url}`, `${property.cover_photo_url}`, `${Number(property.cost_per_night)}`, `${property.street}`, 
-  `${property.city}`, `${property.province}`, `${property.post_code}`, `${property.country}`, `${Number(property.parking_spaces)}`, `${Number(property.number_of_bathrooms)}`, `${Number(property.number_of_bedrooms)}`])
+  `,[`${property.owner_id}`, `${property.title}`, `${property.description}`, `${property.thumbnail_photo_url}`, `${property.cover_photo_url}`, `${property.cost_per_night}`, `${property.street}`, 
+  `${property.city}`, `${property.province}`, `${property.post_code}`, `${property.country}`, `${property.parking_spaces}`, `${property.number_of_bathrooms}`, `${property.number_of_bedrooms}`])
   .then(res => {
+    console.log(res.rows);  
     res.rows;
   })
 }
