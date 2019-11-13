@@ -24,6 +24,7 @@ module.exports = {
   .then(res => {
     return res.rows[0];
   })
+  .catch(err => console.log(err.stack));
   },
   /**
    * Get a single user from the database given their id.
@@ -38,6 +39,7 @@ module.exports = {
     .then(res => {
       return res.rows[0];
     })
+    .catch(err => console.log(err.stack));
   },
     /**
    * Add a new user to the database.
@@ -53,6 +55,7 @@ module.exports = {
     .then(res => {
       res.rows;
     })
+    .catch(err => console.log(err.stack));
   },
 
   /// Reservations
@@ -77,6 +80,7 @@ module.exports = {
     .then(res => {
       return res.rows;
     })
+    .catch(err => console.log(err.stack));
   },
 
   /// Properties
@@ -126,7 +130,8 @@ module.exports = {
     LIMIT $${queryParams.length};
     `;
     return pool.query(queryString, queryParams)
-    .then(res => res.rows);
+    .then(res => res.rows)
+    .catch(err => console.log(err.stack));
   },
   /**
    * Add a property to the database
@@ -134,7 +139,6 @@ module.exports = {
    * @return {Promise<{}>} A promise to the property.
    */
   addProperty: (property) => {
-
     return pool.query(`
     INSERT INTO properties (owner_id, title, description, thumbnail_photo_url, cover_photo_url, cost_per_night, 
     street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
@@ -145,6 +149,7 @@ module.exports = {
     .then(res => {
       res.rows;
     })
+    .catch(err => console.log(err.stack));
   }
 }
 
