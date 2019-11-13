@@ -82,7 +82,7 @@ const getAllReservations = function(guest_id, limit = 10) {
   LIMIT $2;
   `,[`${guest_id}`,limit])
   .then(res => {
-    res.rows;
+    return res.rows;
   })
 }
 exports.getAllReservations = getAllReservations;
