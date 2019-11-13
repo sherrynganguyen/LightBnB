@@ -69,7 +69,6 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  // return getAllProperties(null, 2);
   return pool.query(`
   SELECT properties.*, reservations.*, AVG(rating) as average_rating
   FROM reservations
@@ -96,20 +95,25 @@ exports.getAllReservations = getAllReservations;
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 const getAllProperties = function(options, limit = 10) {
-  // const limitedProperties = {};
-  // for (let i = 1; i <= limit; i++) {
-  //   limitedProperties[i] = properties[i];
-  // }
-  // return Promise.resolve(limitedProperties);
-  return pool.query(`
-  SELECT properties.*, AVG(rating) as average_rating 
+  const queryParams = [];
+  let queryString = `
+  SELECT properties.*, AVG(property_reviews.rating) as average_rating
   FROM properties
   JOIN property_reviews ON properties.id = property_id
+  `;
+  if (options.city) {
+    queryParams.push(`%${options.city}%`);
+    queryString += `WHERE city LIKE $${queryParams.length}`;
+  }
+  queryParams.push(limit);
+  queryString += `
   GROUP BY properties.id
-  LIMIT $1
-  `,[limit])
+  ORDER BY cost_per_night
+  LIMIT $${queryParams.length};
+  `;
+
+  return pool.query(queryString, queryParams)
   .then(res => res.rows);
-  
 }
 exports.getAllProperties = getAllProperties;
 
