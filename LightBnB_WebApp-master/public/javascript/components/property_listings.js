@@ -27,4 +27,11 @@ $(() => {
   }
   window.propertyListings.addProperties = addProperties;
 
+  // setTimeout(() => {console.log($(".property-listing"))},0)
+  $(".property-listing").on('click', '.reservation_button', () => {
+    console.log('here');
+    views_manager.show('makeReservation');
+  });    
+
+
 });
